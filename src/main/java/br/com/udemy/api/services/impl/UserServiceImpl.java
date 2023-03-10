@@ -7,6 +7,7 @@ import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,12 @@ public class UserServiceImpl implements UserService {
     public Users findById(Integer id) {
         Optional<Users> usuario = repository.findById(id);
         return usuario.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado!"));
+    }
+
+    @Override
+    public List<Users> findAll() {
+        List<Users> usuarios = repository.findAll();
+        return usuarios;
     }
 
 }
