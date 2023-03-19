@@ -1,5 +1,6 @@
-package br.com.udemy.api.repositories.exceptions;
+package br.com.udemy.api.resource.exceptions;
 
+import br.com.udemy.api.services.exceptions.DataIntregatyViolationException;
 import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -18,4 +19,9 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(DataIntregatyViolationException.class)
+    public ResponseEntity<StandardError> dataIntegratyViolationExcecption(DataIntregatyViolationException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }

@@ -1,4 +1,4 @@
-package br.com.udemy.api.repositories.exceptions;
+package br.com.udemy.api.resource.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
