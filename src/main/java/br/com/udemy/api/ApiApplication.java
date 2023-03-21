@@ -12,10 +12,4 @@ public class ApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
     }
-
-    @GetMapping("/")
-    public String mensagem(){
-        return "Falaaa Wendel";
-    }
-
 }
