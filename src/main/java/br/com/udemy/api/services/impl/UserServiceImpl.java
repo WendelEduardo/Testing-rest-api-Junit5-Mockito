@@ -5,7 +5,6 @@ import br.com.udemy.api.domain.dto.UserDTO;
 import br.com.udemy.api.repositories.UserRepository;
 import br.com.udemy.api.services.UserService;
 import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -53,6 +52,13 @@ public class UserServiceImpl implements UserService {
     public Users update(UserDTO userDTO) {
         findByEmail(userDTO);
         return repository.save(mapper.map(userDTO, Users.class));
+    }
+
+    @Override
+    public UserDTO delete(Integer id) {
+        Optional<Users> user = Optional.ofNullable(findById(id));
+        repository.deleteById(id);
+        return mapper.map(user, UserDTO.class);
     }
 
 }
