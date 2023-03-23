@@ -11,10 +11,13 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserResourceTest {
@@ -50,11 +53,37 @@ class UserResourceTest {
     }
 
     @Test
-    void findById() {
+    void whenFindByIdTheReturnAnUserDto() {
+        when(service.findById(anyInt())).thenReturn(users);
+        when(mapper.map(any(), any())).thenReturn(userDTO);
+
+        ResponseEntity<UserDTO> response = resource.findById(ID);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(UserDTO.class, response.getBody().getClass());
+
+        assertEquals(ID, response.getBody().getId());
+        assertEquals(NOME, response.getBody().getName());
+        assertEquals(EMAIL, response.getBody().getEmail());
+        assertEquals(PASSWORD, response.getBody().getPassword());
     }
 
     @Test
     void listar() {
+        when(service.findAll()).thenReturn(List.of(users, users));
+        when(mapper.map(any(), any())).thenReturn(userDTO);
+
+        ResponseEntity<List<UserDTO>> lista = resource.listar();
+
+        assertNotNull(lista);
+        assertEquals(ResponseEntity.class, lista.getClass());
+
+        assertEquals(ID, lista.getBody().get(0).getId());
+        assertEquals(NOME, lista.getBody().get(0).getName());
+        assertEquals(EMAIL, lista.getBody().get(0).getEmail());
+        assertEquals(PASSWORD, lista.getBody().get(0).getPassword());
     }
 
     @Test
