@@ -126,7 +126,6 @@ class UserServiceImplTest {
             service.create(userDTO);
         }catch (Exception ex){
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
-
             assertEquals("Email já cadastrado no sistema.", ex.getMessage());
         }
     }
@@ -159,7 +158,6 @@ class UserServiceImplTest {
             service.create(userDTO);
         }catch (Exception ex){
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
-
             assertEquals("Email já cadastrado no sistema.", ex.getMessage());
         }
     }
