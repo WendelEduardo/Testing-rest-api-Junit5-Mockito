@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -131,7 +132,36 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnAnUser() {
+
+        when(repository.save(ArgumentMatchers.any())).thenReturn(users);
+
+        // Test Service
+        Users usuarioAtualizado = service.update(userDTO);
+
+        //Asserções
+        assertNotNull(usuarioAtualizado);
+
+        assertEquals(ID, usuarioAtualizado.getId());
+        assertEquals(NOME, usuarioAtualizado.getName());
+        assertEquals(EMAIL, usuarioAtualizado.getEmail());
+        assertEquals(PASSWORD, usuarioAtualizado.getPassword());
+    }
+
+    @Test
+    void whenUpdateThenReturnDataIntegrityViolationException(){
+
+        // Test repository
+        when(repository.findByEmail(ArgumentMatchers.anyString())).thenReturn(optionalUsers);
+
+        try{
+            optionalUsers.get().setId(2);
+            service.create(userDTO);
+        }catch (Exception ex){
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+
+            assertEquals("Email já cadastrado no sistema.", ex.getMessage());
+        }
     }
 
     @Test

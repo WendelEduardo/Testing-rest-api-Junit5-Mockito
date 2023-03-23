@@ -16,6 +16,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    public static final String EMAIL_JA_CADASTRADO_NO_SISTEMA = "Email já cadastrado no sistema.";
     @Autowired
     private UserRepository repository;
 
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
         Optional<Users> usuario = repository.findByEmail(userDTO.getEmail());
 
         if(usuario.isPresent() && !usuario.get().getId().equals(userDTO.getId()) ){
-            throw new DataIntegrityViolationException("Email já cadastrado no sistema.");
+            throw new DataIntegrityViolationException(EMAIL_JA_CADASTRADO_NO_SISTEMA);
         }
     }
 
