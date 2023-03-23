@@ -6,21 +6,20 @@ import br.com.udemy.api.repositories.UserRepository;
 import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -99,10 +98,36 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateThenReturnAnSucess() {
+
+        // Test repository
+        when(repository.save(ArgumentMatchers.any())).thenReturn(users);
 
         // Test Service
+        Users usuarioCriado = service.create(userDTO);
 
+        assertNotNull(usuarioCriado);
+        assertEquals(Users.class, usuarioCriado.getClass());
+        assertEquals(ID, usuarioCriado.getId());
+        assertEquals(NOME, usuarioCriado.getName());
+        assertEquals(EMAIL, usuarioCriado.getEmail());
+        assertEquals(PASSWORD, usuarioCriado.getPassword());
+    }
+
+    @Test
+    void whenCreateThenReturnDataIntegrityViolationException(){
+
+        // Test repository
+        when(repository.findByEmail(ArgumentMatchers.anyString())).thenReturn(optionalUsers);
+
+        try{
+            optionalUsers.get().setId(2);
+            service.create(userDTO);
+        }catch (Exception ex){
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+
+            assertEquals("Email já cadastrado no sistema.", ex.getMessage());
+        }
     }
 
     @Test
