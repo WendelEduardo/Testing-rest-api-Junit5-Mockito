@@ -31,6 +31,7 @@ class UserServiceImplTest {
     public static final String EMAIL    = "wendel@hotmail.com";
     public static final String PASSWORD = "1234";
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado!";
+    public static final int INDEX = 0;
     @InjectMocks
     private UserServiceImpl service;
     @Mock
@@ -79,18 +80,28 @@ class UserServiceImplTest {
 
     @Test
     void whenFindAllThenReturnAnListOfInstanceUsers() {
+
+        //Test Repository
+        when(repository.findAll()).thenReturn(List.of(users));
+
         // Test Service
         List<Users> usuarios = service.findAll();
 
-        //Test Repository
-        when(repository.findAll()).thenReturn(usuarios);
-
         //Asserções
         assertNotNull(usuarios);
+        assertEquals(1, usuarios.size());
+        assertEquals(Users.class, usuarios.get(INDEX).getClass());
+
+        assertEquals(ID, usuarios.get(INDEX).getId());
+        assertEquals(NOME, usuarios.get(INDEX).getName());
+        assertEquals(EMAIL, usuarios.get(INDEX).getEmail());
+        assertEquals(PASSWORD, usuarios.get(INDEX).getPassword());
     }
 
     @Test
     void create() {
+
+        // Test Service
 
     }
 
