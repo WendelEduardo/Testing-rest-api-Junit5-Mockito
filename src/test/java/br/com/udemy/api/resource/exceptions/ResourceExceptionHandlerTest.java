@@ -1,12 +1,10 @@
 package br.com.udemy.api.resource.exceptions;
 
-import br.com.udemy.api.services.exceptions.DataIntregatyViolationException;
+import br.com.udemy.api.services.exceptions.DataIntegratyViolationException;
 import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -20,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 class ResourceExceptionHandlerTest {
 
     public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado!";
+    public static final String EMAIL_JA_CADASTRADO_NO_SISTEMA = "Email já cadastrado no sistema.";
     @InjectMocks
     private ResourceExceptionHandler handler;
 
@@ -45,7 +44,7 @@ class ResourceExceptionHandlerTest {
     @Test
     void dataIntegratyViolationExcecption() {
 
-        ResponseEntity<StandardError> erro = handler.dataIntegratyViolationExcecption(new DataIntregatyViolationException("Email já cadastrado no sistema."),
+        ResponseEntity<StandardError> erro = handler.dataIntegratyViolationExcecption(new DataIntegratyViolationException(EMAIL_JA_CADASTRADO_NO_SISTEMA),
                 new MockHttpServletRequest());
 
         assertNotNull(erro);
@@ -53,8 +52,10 @@ class ResourceExceptionHandlerTest {
         assertEquals(ResponseEntity.class, erro.getClass());
         assertEquals(HttpStatus.BAD_REQUEST, erro.getStatusCode());
         assertEquals(StandardError.class, erro.getBody().getClass());
-        assertEquals("Email já cadastrado no sistema.", erro.getBody().getError());
+        assertEquals(EMAIL_JA_CADASTRADO_NO_SISTEMA, erro.getBody().getError());
         assertEquals(400, erro.getBody().getStatus());
 
+        assertNotNull(erro.getBody().getTimestamp());
+        assertNotNull(erro.getBody().getPath());
     }
 }
