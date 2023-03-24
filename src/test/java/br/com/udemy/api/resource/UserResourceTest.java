@@ -131,6 +131,12 @@ class UserResourceTest {
 
     @Test
     void delete() {
+        when(service.delete(anyInt())).thenReturn(userDTO);
 
+        ResponseEntity<UserDTO> usuarioDeletado = resource.delete(ID);
+
+        assertNotNull(usuarioDeletado);
+        verify(service, times(1)).delete(anyInt());
+        assertEquals(HttpStatus.OK, usuarioDeletado.getStatusCode());
     }
 }
