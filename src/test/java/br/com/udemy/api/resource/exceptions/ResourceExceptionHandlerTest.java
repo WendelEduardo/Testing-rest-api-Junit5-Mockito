@@ -1,5 +1,6 @@
 package br.com.udemy.api.resource.exceptions;
 
+import br.com.udemy.api.services.exceptions.DataIntregatyViolationException;
 import br.com.udemy.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,5 +44,17 @@ class ResourceExceptionHandlerTest {
 
     @Test
     void dataIntegratyViolationExcecption() {
+
+        ResponseEntity<StandardError> erro = handler.dataIntegratyViolationExcecption(new DataIntregatyViolationException("Email já cadastrado no sistema."),
+                new MockHttpServletRequest());
+
+        assertNotNull(erro);
+        assertNotNull(erro.getBody());
+        assertEquals(ResponseEntity.class, erro.getClass());
+        assertEquals(HttpStatus.BAD_REQUEST, erro.getStatusCode());
+        assertEquals(StandardError.class, erro.getBody().getClass());
+        assertEquals("Email já cadastrado no sistema.", erro.getBody().getError());
+        assertEquals(400, erro.getBody().getStatus());
+
     }
 }
