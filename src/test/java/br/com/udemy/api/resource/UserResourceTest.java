@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -80,14 +81,32 @@ class UserResourceTest {
         assertNotNull(lista);
         assertEquals(ResponseEntity.class, lista.getClass());
 
-        assertEquals(ID, lista.getBody().get(0).getId());
-        assertEquals(NOME, lista.getBody().get(0).getName());
-        assertEquals(EMAIL, lista.getBody().get(0).getEmail());
-        assertEquals(PASSWORD, lista.getBody().get(0).getPassword());
+        assertEquals(ID, lista.getBody().get(INDEX).getId());
+        assertEquals(NOME, lista.getBody().get(INDEX).getName());
+        assertEquals(EMAIL, lista.getBody().get(INDEX).getEmail());
+        assertEquals(PASSWORD, lista.getBody().get(INDEX).getPassword());
+
+        assertEquals(HttpStatus.OK, lista.getStatusCode());
     }
 
     @Test
     void create() {
+
+        when(service.create(userDTO)).thenReturn(users);
+        when(mapper.map(any(), any())).thenReturn(userDTO);
+
+        ResponseEntity<UserDTO> usuarioCriado = resource.create(userDTO);
+
+        assertNotNull(usuarioCriado);
+
+        assertEquals(ResponseEntity.class, usuarioCriado.getClass());
+        assertEquals(ID, usuarioCriado.getBody().getId());
+        assertEquals(NOME, usuarioCriado.getBody().getName());
+        assertEquals(EMAIL, usuarioCriado.getBody().getEmail());
+        assertEquals(PASSWORD, usuarioCriado.getBody().getPassword());
+
+        assertEquals(HttpStatus.CREATED, usuarioCriado.getStatusCode());
+        assertNotNull(usuarioCriado.getHeaders().get("Location"));
     }
 
     @Test
